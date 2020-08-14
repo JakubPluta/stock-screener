@@ -1,6 +1,22 @@
 import logging
 import requests
 from requests import HTTPError
+from settings.default import TOKEN
+
+
+ENDPOINTS = {
+    "Company Profile" : "stock/profile2",
+    "Stock Symbol" : "/stock/symbol?exchange=US",
+    "Company News" : "/company-news",
+    "News Sentiment" : "/news-sentiment",
+    "Basic Financials" : "/stock/metric",
+    "Financials As Reported" : "/stock/financials-reported",
+    "SEC Filings" : "/stock/filings",
+    "Recommendation Trends" : "/stock/recommendation",
+    "Quote" : "/quote"
+
+}
+
 
 logging.basicConfig(level="INFO")
 logger = logging.getLogger(__name__)
@@ -18,12 +34,11 @@ def validate_http_status(response) -> None:
     logger.debug("Request Successful: {}".format(status_code))
 
 
-class FMPApiClient:
-    """Financial Modeling Prep api wrapper, to fetch some basic information about stock
-    like company overview, financial statements and some metrics and quotations
+class FinnhubClient:
+    """Finnhub api wrapper, to fetch financial data
     """
 
-    URL = "https://financialmodelingprep.com/api/v3/"
+    URL = 'https://finnhub.io/api/v1/'
 
     def __init__(self, api_key, user_name="default"):
         self._api_key = api_key
@@ -35,67 +50,49 @@ class FMPApiClient:
         :param endpoint: api endpoint - > list of endpoints available with method show_endpoints()
         :return: response from api loaded into json file
         """
+        headers = {"Content-type": "application/json",
+                   "X-Finnhub-Token": TOKEN}
 
-        headers = {"Content-type": "application/json"}
-        response = requests.request(
-            "GET",
-            self.URL + f"/{endpoint}/{symbol}" + f"?apikey={self._api_key}",
-            headers=headers,
-        )
+        response = requests.get(self.URL + f"/{endpoint}?symbol={symbol}", headers=headers)
         validate_http_status(response)
-        return  response.content #json.loads(response.content)
+        return response.json()
 
     @staticmethod
     def show_endpoints():
         """Display all available endpoints"""
-        pass
+        print(ENDPOINTS.keys())
 
     def fetch_company(self, symbol):
         """Fetch basic information about company"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["profile"])
+        return self.__call_api(symbol, ENDPOINTS["Company Profile"])
 
-    def fetch_balance_sheet_statement(self, symbol):
-        """Fetch balance sheet statement"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["balance-sheet-statement"])
-
-    def fetch_income_statement(self, symbol):
-        """Fetch income statement"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["income-statement"])
-
-    def fetch_cash_flow_statement(self, symbol):
-        """Fetch cash flow statement"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["cash-flow-statement"])
 
     def fetch_financial_statement_as_reported(self, symbol):
         """Fetch financial statement report"""
         return self.__call_api(
-            symbol, ENDPOINTS_DICT["financial-statement-full-as-reported"]
+            symbol, ENDPOINTS["Financials As Reported"]
         )
 
     def fetch_key_metrics(self, symbol):
         """Fetch key metrics about company stock"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["key-metrics"])
+        return self.__call_api(symbol, ENDPOINTS["Basic Financials"])
 
-    def fetch_ratings(self, symbol):
-        """Fetch ratings of company from some analytical institutions"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["rating"])
+    def fetch_company_news(self, symbol):
+        """Fetch company news"""
+        return self.__call_api(symbol, ENDPOINTS["Company News"])
 
-    def fetch_dcf(self, symbol):
-        """Fetch Discounted Cash Flow for given company"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["discounted-cash-flow"])
-
-    def fetch_financial_growth(self, symbol):
-        """Fetch financial growth of company"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["financial-growth"])
+    def fetch_news_sentiments(self, symbol):
+        """Fetch company news sentiments"""
+        return self.__call_api(symbol, ENDPOINTS["News Sentiment"])
 
     def fetch_quote(self, symbol):
         """Fetch quotation of company"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["quote"])
+        return self.__call_api(symbol, ENDPOINTS["Quote"])
 
-    def fetch_ratios(self, symbol):
-        """Fetch financial ratios of company"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["ratios"])
+    def fetch_recommendations(self, symbol):
+        """Fetch recommendations"""
+        return self.__call_api(symbol, ENDPOINTS["Recommendation Trends"])
 
-    def fetch_enterprise_value(self, symbol):
-        """Fetch Enterprise Value of company"""
-        return self.__call_api(symbol, ENDPOINTS_DICT["enterprise-value"])
+    def fetch_sec_fillings(self, symbol):
+        """Fetch SEC Filings"""
+        return self.__call_api(symbol, ENDPOINTS["SEC Filings"])

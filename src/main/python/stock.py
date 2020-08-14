@@ -1,13 +1,11 @@
-from client import FMPApiClient
+from client import FinnhubClient
 from settings.default import TOKEN
-from stock_elements import *
-import pandas as pd
 
 
 class StockCreator:
     def __init__(self, ticker):
         self.ticker = ticker
-        self.__client = FMPApiClient(TOKEN)
+        self.__client = FinnhubClient(TOKEN)
         self.__stock: Stock
 
     def create_stock(self):
