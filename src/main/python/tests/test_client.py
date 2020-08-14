@@ -1,5 +1,5 @@
 from client import FinnhubClient
-from financial_statement import BalanceSheet
+from financial_statement import BalanceSheet, FinancialStatement
 from settings.default import TOKEN
 import pandas as pd
 
@@ -31,6 +31,13 @@ def test_balance_sheet():
     bs = BalanceSheet(financial_statement)
     balance_sheet = bs.get_balance_sheet()
     assert isinstance(balance_sheet, pd.DataFrame)
+
+
+def test_financial_statement():
     
-    
-    
+    company = 'AAPL'
+    client = FinnhubClient(TOKEN)
+    financial_statement = client.fetch_financial_statement_as_reported(company)
+    fs = FinancialStatement(financial_statement)
+
+

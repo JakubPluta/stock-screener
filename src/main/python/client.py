@@ -5,16 +5,15 @@ from settings.default import TOKEN
 
 
 ENDPOINTS = {
-    "Company Profile" : "stock/profile2",
-    "Stock Symbol" : "/stock/symbol?exchange=US",
-    "Company News" : "/company-news",
-    "News Sentiment" : "/news-sentiment",
-    "Basic Financials" : "/stock/metric",
-    "Financials As Reported" : "/stock/financials-reported",
-    "SEC Filings" : "/stock/filings",
-    "Recommendation Trends" : "/stock/recommendation",
-    "Quote" : "/quote"
-
+    "Company Profile": "stock/profile2",
+    "Stock Symbol": "/stock/symbol?exchange=US",
+    "Company News": "/company-news",
+    "News Sentiment": "/news-sentiment",
+    "Basic Financials": "/stock/metric",
+    "Financials As Reported": "/stock/financials-reported",
+    "SEC Filings": "/stock/filings",
+    "Recommendation Trends": "/stock/recommendation",
+    "Quote": "/quote",
 }
 
 
@@ -38,7 +37,7 @@ class FinnhubClient:
     """Finnhub api wrapper, to fetch financial data
     """
 
-    URL = 'https://finnhub.io/api/v1/'
+    URL = "https://finnhub.io/api/v1/"
 
     def __init__(self, api_key, user_name="default"):
         self._api_key = api_key
@@ -50,10 +49,11 @@ class FinnhubClient:
         :param endpoint: api endpoint - > list of endpoints available with method show_endpoints()
         :return: response from api loaded into json file
         """
-        headers = {"Content-type": "application/json",
-                   "X-Finnhub-Token": TOKEN}
+        headers = {"Content-type": "application/json", "X-Finnhub-Token": TOKEN}
 
-        response = requests.get(self.URL + f"/{endpoint}?symbol={symbol}", headers=headers)
+        response = requests.get(
+            self.URL + f"/{endpoint}?symbol={symbol}", headers=headers
+        )
         validate_http_status(response)
         return response.json()
 
@@ -66,12 +66,9 @@ class FinnhubClient:
         """Fetch basic information about company"""
         return self.__call_api(symbol, ENDPOINTS["Company Profile"])
 
-
     def fetch_financial_statement_as_reported(self, symbol):
         """Fetch financial statement report"""
-        return self.__call_api(
-            symbol, ENDPOINTS["Financials As Reported"]
-        )
+        return self.__call_api(symbol, ENDPOINTS["Financials As Reported"])
 
     def fetch_key_metrics(self, symbol):
         """Fetch key metrics about company stock"""

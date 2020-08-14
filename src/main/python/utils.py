@@ -2,7 +2,6 @@
 # Function for flattening json
 # Source: https://www.geeksforgeeks.org/flattening-json-objects-in-python/
 
-
 def flatten_json(y):
     out = {}
     def flatten(x, name =''):
