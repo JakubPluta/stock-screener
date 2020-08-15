@@ -1,5 +1,5 @@
 from client import FinnhubClient
-from financial_statement import BalanceSheet, FinancialStatement
+from stock import StockCreator
 from settings.default import TOKEN
 import pandas as pd
 
@@ -7,6 +7,7 @@ def test_client_should_fetch_financial_statement():
     # given
     company = 'AAPL'
     client = FinnhubClient(TOKEN)
+    client.show_endpoints()
     financial_statement = client.fetch_financial_statement_as_reported(company)
     data = financial_statement.get('data')
     balance_sheet = []
@@ -23,21 +24,11 @@ def test_client_should_fetch_financial_statement():
     assert results is not None
     assert isinstance(results,pd.DataFrame)
 
-def test_balance_sheet():
-    
+
+
+def test_stock_creator_should_create_stock():
     company = 'AAPL'
-    client = FinnhubClient(TOKEN)
-    financial_statement = client.fetch_financial_statement_as_reported(company)
-    bs = BalanceSheet(financial_statement)
-    balance_sheet = bs.get_balance_sheet()
-    assert isinstance(balance_sheet, pd.DataFrame)
-
-
-def test_financial_statement():
     
-    company = 'AAPL'
-    client = FinnhubClient(TOKEN)
-    financial_statement = client.fetch_financial_statement_as_reported(company)
-    fs = FinancialStatement(financial_statement)
-
-
+    stock_creator = StockCreator(company)
+    
+    assert stock_creator

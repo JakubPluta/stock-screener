@@ -1,27 +1,38 @@
 from client import FinnhubClient
 from settings.default import TOKEN
+from financial_statement import *
 
 
 class StockCreator:
     def __init__(self, ticker):
         self.ticker = ticker
         self.__client = FinnhubClient(TOKEN)
+        self.__financial_statement = FinancialStatement(self.ticker, self.__client)
+        self.__metrics = None
+        self.__company = CompanyProfile(self.ticker, self.__client)
         self.__stock: Stock
 
     def create_stock(self):
-        pass
+        ticker = self.ticker,
+        company = self.__company.get_company()
+        balance_sheet = self.__financial_statement.get_balance_sheet()
+        income_statement = self.__financial_statement.get_income_statement()
+        cash_flow = self.__financial_statement.get_cash_flow()
+        stats = None
+
+        return Stock(ticker, company, balance_sheet, income_statement, cash_flow, stats)
 
 
 class Stock:
     def __init__(
         self, ticker, company, balance_sheet, income_statement, cash_flow, stats
     ):
-        self.__ticker = ticker
-        self.__company = company
-        self.__balance_sheet = balance_sheet
-        self.__income_statement = income_statement
-        self.__cash_flow = cash_flow
-        self.__stats = stats
+        self.__ticker: str = ticker
+        self.__company: pd.DataFrame = company
+        self.__balance_sheet: pd.DataFrame = balance_sheet
+        self.__income_statement: pd.DataFrame = income_statement
+        self.__cash_flow: pd.DataFrame = cash_flow
+        self.__stats: pd.DataFrame = stats
 
     def __str__(self):
         return f"Data found for {self.__ticker} : {self.__company}"

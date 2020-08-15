@@ -1,6 +1,7 @@
-
+import pandas as pd
 # Function for flattening json
 # Source: https://www.geeksforgeeks.org/flattening-json-objects-in-python/
+# https://medium.com/@augustin.goudet/introduction-to-finnhub-97c2117dd9a9
 
 def flatten_json(y):
     out = {}
@@ -27,3 +28,4 @@ def flatten_json(y):
 
     flatten(y)
     return out
+

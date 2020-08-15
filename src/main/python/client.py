@@ -60,7 +60,8 @@ class FinnhubClient:
     @staticmethod
     def show_endpoints():
         """Display all available endpoints"""
-        print(ENDPOINTS.keys())
+        for key in ENDPOINTS.keys():
+            print(key, end=", ")
 
     def fetch_company(self, symbol):
         """Fetch basic information about company"""
