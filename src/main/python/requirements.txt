@@ -1,3 +1,5 @@
 pandas
 requests
 openpyxl
+pathlib
+logging
