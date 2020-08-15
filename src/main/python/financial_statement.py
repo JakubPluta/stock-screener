@@ -28,7 +28,9 @@ class FinancialStatement:
             ["symbol", "year", "label", "value"]
         ]
         results["value"] = pd.to_numeric(results["value"], errors="coerce")
-        return results.pivot_table(index="label", columns="year", values="value")
+        results = results.pivot_table(index="label", columns="year", values="value")
+        results.columns = results.columns.astype(str)
+        return results
 
     def extract_elements_of_financial_statement(self):
         financial_statement = []
@@ -53,7 +55,21 @@ class CompanyProfile:
         self.__company = self.__extract_company()
 
     def __extract_company(self):
-        return pd.json_normalize(self.__data).T
+        data = pd.json_normalize(self.__data).T
+        return data
 
     def get_company(self):
         return self.__company
+
+
+class KeyMetrics:
+    def __init__(self, ticker, client: FinnhubClient):
+        self.__ticker = ticker
+        self.__data = client.fetch_key_metrics(self.__ticker)
+        self.__key_metrics = self.__extract_key_metrics()
+
+    def __extract_key_metrics(self):
+        return pd.json_normalize(self.__data.get('metric')).T
+
+    def get_key_metrics(self):
+        return self.__key_metrics

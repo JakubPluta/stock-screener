@@ -1,7 +1,9 @@
 from client import FinnhubClient
 from stock import StockCreator
+from report import StockReport
 from settings.default import TOKEN
 import pandas as pd
+import os
 
 def test_client_should_fetch_financial_statement():
     # given
@@ -20,6 +22,7 @@ def test_client_should_fetch_financial_statement():
     results = pd.concat(balance_sheet,ignore_index=True) [['symbol','year','label','value']]   
     results['value'] = pd.to_numeric(results['value'], errors='coerce')
     results = results.pivot_table(index='label', columns='year', values='value')
+    results.columns = results.columns.astype(str)
     
     assert results is not None
     assert isinstance(results,pd.DataFrame)
@@ -30,5 +33,13 @@ def test_stock_creator_should_create_stock():
     company = 'AAPL'
     
     stock_creator = StockCreator(company)
+    stock = stock_creator.create_stock()
+    assert stock
     
-    assert stock_creator
+def test_report():
+    company = 'AAPL'
+    stock_creator = StockCreator(company)
+    stock = stock_creator.create_stock()
+    z = StockReport(stock)
+    z.generate(filename="Financial Report")
+    assert z

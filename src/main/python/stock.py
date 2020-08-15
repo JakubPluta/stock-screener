@@ -8,7 +8,7 @@ class StockCreator:
         self.ticker = ticker
         self.__client = FinnhubClient(TOKEN)
         self.__financial_statement = FinancialStatement(self.ticker, self.__client)
-        self.__metrics = None
+        self.__metrics = KeyMetrics(self.ticker, self.__client)
         self.__company = CompanyProfile(self.ticker, self.__client)
         self.__stock: Stock
 
@@ -18,7 +18,7 @@ class StockCreator:
         balance_sheet = self.__financial_statement.get_balance_sheet()
         income_statement = self.__financial_statement.get_income_statement()
         cash_flow = self.__financial_statement.get_cash_flow()
-        stats = None
+        stats = self.__metrics.get_key_metrics()
 
         return Stock(ticker, company, balance_sheet, income_statement, cash_flow, stats)
 
@@ -35,7 +35,7 @@ class Stock:
         self.__stats: pd.DataFrame = stats
 
     def __str__(self):
-        return f"Data found for {self.__ticker} : {self.__company}"
+        return f"Data found for {self.__ticker}"
 
     def __verify_stocks(self):
         pass
