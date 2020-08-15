@@ -1,21 +1,11 @@
-from settings.default import TOKEN
-from client import *
 from stock import *
-from financial_statement import *
 from utils import *
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formatting.rule import Rule
 from openpyxl.utils import get_column_letter
-from openpyxl.utils.dataframe import dataframe_to_rows
-from openpyxl.worksheet.table import Table, TableStyleInfo
 from pathlib import Path
-import tempfile
-
-
-style = TableStyleInfo(name="TableStyleMedium9", showFirstColumn=False,
-                       showLastColumn=False, showRowStripes=True, showColumnStripes=True)
 
 
 class StockReport:
@@ -27,39 +17,45 @@ class StockReport:
     def __write_company_info(self):
         data = self.__stock.get_company()
         ws = self.__wb.active
-        ws.title = f"{self.__stock.get_ticker()}"
+        ws.title = f"{self.__stock.get_ticker()[0]}"
+        write_data_frame_to_rows(ws, data, False)
+        format_ws_borders(ws)
+        format_ws(ws)
 
-        for r in dataframe_to_rows(data, index=True, header=False):
-            ws.append(r)
-        fit_width(ws)
-
-    def __write_to_balance_sheet_to_excel(self):
+    def __write_balance_sheet_to_excel(self):
         data = self.__stock.get_balance_sheet()
         ws = self.__wb.create_sheet("BalanceSheet")
+        write_data_frame_to_rows(ws, data)
+        ws.delete_rows(2, 1)
+        format_ws(ws)
 
-        for r in dataframe_to_rows(data, index=True, header=True):
-            ws.append(r)
-        fit_width(ws)
-        tab = Table(displayName="IncomeStatement", ref=f"A1:{get_column_letter(ws.max_column)}{ws.max_row}")
-        tab.tableStyleInfo = style
-        ws.add_table(tab)
-
-    def __write_to_income_statement_to_excel(self):
+    def __write_income_statement_to_excel(self):
         data = self.__stock.get_income_statement()
         ws = self.__wb.create_sheet("IncomeStatement")
-        for r in dataframe_to_rows(data, index=True, header=True):
-            ws.append(r)
+        write_data_frame_to_rows(ws, data)
+        ws.delete_rows(2, 1)
+        format_ws(ws)
 
-        fit_width(ws)
-        tab = Table(displayName="IncomeStatement", ref=f"A1:{get_column_letter(ws.max_column)}{ws.max_row}")
-        # Add a default style with striped rows and banded columns
-        tab.tableStyleInfo = style
-        ws.add_table(tab)
+    def __write_cash_flow_to_excel(self):
+        data = self.__stock.get_cash_flow()
+        ws = self.__wb.create_sheet("CashFlow")
+        write_data_frame_to_rows(ws, data)
+        ws.delete_rows(2, 1)
+        format_ws(ws)
+
+    def __write_metrics_to_excel(self):
+        data = self.__stock.get_key_stats()
+        ws = self.__wb.create_sheet("KeyMetrics")
+        write_data_frame_to_rows(ws, data)
+        ws.delete_rows(2, 1)
+        format_ws(ws)
 
     def generate(self, filename, directory="output"):
         self.__write_company_info()
-        self.__write_to_balance_sheet_to_excel()
-        self.__write_to_income_statement_to_excel()
+        self.__write_balance_sheet_to_excel()
+        self.__write_income_statement_to_excel()
+        self.__write_cash_flow_to_excel()
+        self.__write_metrics_to_excel()
 
         path = Path(f'{directory}/{filename}.xlsx')
         path.parent.mkdir(parents=True, exist_ok=True)

@@ -37,7 +37,7 @@ def test_stock_creator_should_create_stock():
     assert stock
     
 def test_report():
-    company = 'AAPL'
+    company = 'MMM'
     stock_creator = StockCreator(company)
     stock = stock_creator.create_stock()
     z = StockReport(stock)
