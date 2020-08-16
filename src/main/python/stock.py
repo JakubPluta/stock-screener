@@ -4,9 +4,9 @@ from financial_statement import *
 
 
 class StockCreator:
-    def __init__(self, ticker):
+    def __init__(self, ticker, api_key):
         self.ticker = ticker
-        self.__client = FinnhubClient(TOKEN)
+        self.__client = FinnhubClient(api_key)
         self.__financial_statement = FinancialStatement(self.ticker, self.__client)
         self.__metrics = KeyMetrics(self.ticker, self.__client)
         self.__company = CompanyProfile(self.ticker, self.__client)

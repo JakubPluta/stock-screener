@@ -48,13 +48,13 @@ def fit_width(ws):
 
 
 def write_data_frame_to_rows(ws, data, header=True):
-    for r in dataframe_to_rows(data, index=True, header=header):
+    for r in dataframe_to_rows(data, index=False, header=header):
         ws.append(r)
     fit_width(ws)
 
 
 def format_ws(ws):
-    grey_background = PatternFill(bgColor="90EE90")
+    grey_background = PatternFill(bgColor="f0efeb")
 
     header = DifferentialStyle(font=Font(bold=True))
     background_color = DifferentialStyle(fill=grey_background)
@@ -70,15 +70,17 @@ def format_ws(ws):
     last_column = get_column_letter(ws.max_column)
 
     ws.conditional_formatting.add(f"A1:{last_column}1", r0)
+    ws.conditional_formatting.add(f"A1:A{last_row}", r0)
     ws.conditional_formatting.add(f"A1:{last_column}{last_row}", r1)
+
     format_ws_borders(ws)
 
 
 def format_ws_borders(ws):
-    border = Border(left=Side(border_style='medium', color='000000'),
-                    right=Side(border_style='medium', color='000000'),
-                    top=Side(border_style='medium', color='000000'),
-                    bottom=Side(border_style='medium', color='000000'))
+    border = Border(left=Side(border_style='thin', color='264653'),
+                    right=Side(border_style='thin', color='264653'),
+                    top=Side(border_style='thin', color='264653'),
+                    bottom=Side(border_style='thin', color='264653'))
 
     rows = ws
     for row in rows:

@@ -30,7 +30,7 @@ class FinancialStatement:
         results["value"] = pd.to_numeric(results["value"], errors="coerce")
         results = results.pivot_table(index="label", columns="year", values="value")
         results.columns = results.columns.astype(str)
-        return results
+        return results.reset_index()
 
     def extract_elements_of_financial_statement(self):
         financial_statement = []
@@ -56,7 +56,7 @@ class CompanyProfile:
 
     def __extract_company(self):
         data = pd.json_normalize(self.__data).T
-        return data
+        return data.reset_index()
 
     def get_company(self):
         return self.__company
@@ -69,7 +69,7 @@ class KeyMetrics:
         self.__key_metrics = self.__extract_key_metrics()
 
     def __extract_key_metrics(self):
-        return pd.json_normalize(self.__data.get('metric')).T
+        return pd.json_normalize(self.__data.get('metric')).T.reset_index().rename(columns={"index":"KPI", 0:"Value"})
 
     def get_key_metrics(self):
         return self.__key_metrics

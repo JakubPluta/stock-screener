@@ -1,10 +1,6 @@
 from stock import *
 from utils import *
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
-from openpyxl.styles.differential import DifferentialStyle
-from openpyxl.formatting.rule import Rule
-from openpyxl.utils import get_column_letter
 from pathlib import Path
 
 
@@ -13,6 +9,7 @@ class StockReport:
     def __init__(self, stock: Stock):
         self.__stock = stock
         self.__wb = Workbook()
+        self.__output = None
 
     def __write_company_info(self):
         data = self.__stock.get_company()
@@ -59,7 +56,9 @@ class StockReport:
 
         path = Path(f'{directory}/{filename}.xlsx')
         path.parent.mkdir(parents=True, exist_ok=True)
+        self.__output = path
 
+        print(f"Report was generated and save {path}")
         self.__wb.save(path)
 
 
