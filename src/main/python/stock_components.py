@@ -73,3 +73,59 @@ class KeyMetrics:
 
     def get_key_metrics(self):
         return self.__key_metrics
+
+
+class CompanyNews:
+    def __init__(self, ticker, client: FinnhubClient):
+        self.__ticker = ticker
+        self.__data = client.fetch_company_news(self.__ticker)
+        self.__company_news = self.__extract_company_news()
+
+    def __extract_company_news(self):
+        data = pd.json_normalize(self.__data).T
+        return data.reset_index()
+
+    def get_company_news(self):
+        return self.__company_news
+
+
+class NewsSentiment:
+    def __init__(self, ticker, client: FinnhubClient):
+        self.__ticker = ticker
+        self.__data = client.fetch_news_sentiments(self.__ticker)
+        self.__sentiments = self.__extract_sentiments()
+
+    def __extract_sentiments(self):
+        data = pd.json_normalize(self.__data).T
+        return data.reset_index()
+
+    def get_sentiments(self):
+        return self.__sentiments
+
+
+class Recommendations:
+    def __init__(self, ticker, client: FinnhubClient):
+        self.__ticker = ticker
+        self.__data = client.fetch_recommendations(self.__ticker)
+        self.__recommendations = self.__extract_recommendations()
+
+    def __extract_recommendations(self):
+        data = pd.json_normalize(self.__data).T
+        return data.reset_index()
+
+    def get_recommendations(self):
+        return self.__recommendations
+
+
+class Quote:
+    def __init__(self, ticker, client: FinnhubClient):
+        self.__ticker = ticker
+        self.__data = client.fetch_quote(self.__ticker)
+        self.__quote = self.__extract_quote()
+
+    def __extract_quote(self):
+        data = pd.json_normalize(self.__data).T
+        return data.reset_index()
+
+    def get_quote(self):
+        return self.__quote

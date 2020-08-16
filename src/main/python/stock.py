@@ -1,6 +1,6 @@
 from client import FinnhubClient
 from settings.default import TOKEN
-from financial_statement import *
+from stock_components import *
 
 
 class StockCreator:
@@ -10,6 +10,9 @@ class StockCreator:
         self.__financial_statement = FinancialStatement(self.ticker, self.__client)
         self.__metrics = KeyMetrics(self.ticker, self.__client)
         self.__company = CompanyProfile(self.ticker, self.__client)
+        self.__quote = Quote(self.ticker, self.__client)
+        self.__company_news = CompanyNews(self.ticker, self.__client)
+        self.__recommendations = Recommendations(self.ticker, self.__client)
         self.__stock: Stock
 
     def create_stock(self):
@@ -19,13 +22,17 @@ class StockCreator:
         income_statement = self.__financial_statement.get_income_statement()
         cash_flow = self.__financial_statement.get_cash_flow()
         stats = self.__metrics.get_key_metrics()
+        recommendations = self.__recommendations.get_recommendations()
+        quote = self.__quote.get_quote()
+        company_news = self.__company_news.get_company_news()
 
-        return Stock(ticker, company, balance_sheet, income_statement, cash_flow, stats)
+        return Stock(ticker, company, balance_sheet, income_statement, cash_flow, stats, recommendations,
+                     quote, company_news)
 
 
 class Stock:
     def __init__(
-        self, ticker, company, balance_sheet, income_statement, cash_flow, stats
+        self, ticker, company, balance_sheet, income_statement, cash_flow, stats, recommendations, quote, company_news
     ):
         self.__ticker: str = ticker
         self.__company: pd.DataFrame = company
@@ -33,6 +40,9 @@ class Stock:
         self.__income_statement: pd.DataFrame = income_statement
         self.__cash_flow: pd.DataFrame = cash_flow
         self.__stats: pd.DataFrame = stats
+        self.__company_news = company_news
+        self.__recommendations = recommendations
+        self.__quote = quote
 
     def __str__(self):
         return f"Data found for {self.__ticker}"
@@ -75,3 +85,12 @@ class Stock:
 
     def set_key_stats(self, stats):
         self.__stats = stats
+
+    def get_recommendations(self):
+        return self.__recommendations
+
+    def get_quote(self):
+        return self.__quote
+
+    def get_company_news(self):
+        return self.__company_news

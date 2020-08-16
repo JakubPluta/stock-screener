@@ -47,12 +47,36 @@ class StockReport:
         ws.delete_rows(2, 1)
         format_ws(ws)
 
+    def __write_company_news_info(self):
+        data = self.__stock.get_company_news()
+        ws = self.__wb.create_sheet("CompanyNews")
+        write_data_frame_to_rows(ws, data)
+        format_ws_borders(ws)
+        format_ws(ws)
+
+    def __write_recommendations(self):
+        data = self.__stock.get_recommendations()
+        ws = self.__wb.create_sheet("Recommendations")
+        write_data_frame_to_rows(ws, data)
+        format_ws_borders(ws)
+        format_ws(ws)
+
+    def __write_quote(self):
+        data = self.__stock.get_quote()
+        ws = self.__wb.create_sheet("Quote")
+        write_data_frame_to_rows(ws, data)
+        format_ws_borders(ws)
+        format_ws(ws)
+
     def generate(self, filename, directory="output"):
         self.__write_company_info()
+        self.__write_company_news_info()
         self.__write_balance_sheet_to_excel()
         self.__write_income_statement_to_excel()
         self.__write_cash_flow_to_excel()
+        self.__write_quote()
         self.__write_metrics_to_excel()
+        self.__write_recommendations()
 
         path = Path(f'{directory}/{filename}.xlsx')
         path.parent.mkdir(parents=True, exist_ok=True)
