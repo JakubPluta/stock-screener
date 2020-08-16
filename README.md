@@ -17,6 +17,11 @@ git clone https://github.com/JakubPluta/stock-screener.git
 pip install -r requirements
 ```
 
+## Running script with command line
+
+```
+python src/main/python/application.py --ticker="" --api_key="" --filename="" --directory=""
+```
 
 ## Running the tests
 
