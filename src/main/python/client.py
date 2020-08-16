@@ -2,7 +2,7 @@ import logging
 import requests
 from requests import HTTPError
 from settings.default import TOKEN
-
+from utils import create_unix_time_stamps, create_date_as_strings
 
 ENDPOINTS = {
     "Company Profile": "stock/profile2",
@@ -13,7 +13,7 @@ ENDPOINTS = {
     "Financials As Reported": "/stock/financials-reported",
     "SEC Filings": "/stock/filings",
     "Recommendation Trends": "/stock/recommendation",
-    "Quote": "/quote",
+    "Quote": "/stock/candle",
 }
 
 
@@ -43,7 +43,7 @@ class FinnhubClient:
         self._api_key = api_key
         self._user_name = user_name
 
-    def __call_api(self, symbol, endpoint):
+    def __call_api(self, symbol, endpoint, arg=None):
         """Basic method to call api endpoints
         :param symbol: tikcer symbol e.g "MMM"
         :param endpoint: api endpoint - > list of endpoints available with method show_endpoints()
@@ -51,9 +51,12 @@ class FinnhubClient:
         """
         headers = {"Content-type": "application/json", "X-Finnhub-Token": TOKEN}
 
-        response = requests.get(
-            self.URL + f"/{endpoint}?symbol={symbol}", headers=headers
-        )
+        if arg is not None:
+            response = requests.get(self.URL + f"/{endpoint}?symbol={symbol}{arg}", headers=headers)
+        else:
+            response = requests.get(
+                self.URL + f"/{endpoint}?symbol={symbol}", headers=headers
+            )
         validate_http_status(response)
         return response.json()
 
@@ -77,7 +80,8 @@ class FinnhubClient:
 
     def fetch_company_news(self, symbol):
         """Fetch company news"""
-        return self.__call_api(symbol, ENDPOINTS["Company News"])
+        end, start = create_date_as_strings()
+        return self.__call_api(symbol, ENDPOINTS["Company News"], arg=f"&from={start}&to={end}")
 
     def fetch_news_sentiments(self, symbol):
         """Fetch company news sentiments"""
@@ -85,7 +89,8 @@ class FinnhubClient:
 
     def fetch_quote(self, symbol):
         """Fetch quotation of company"""
-        return self.__call_api(symbol, ENDPOINTS["Quote"])
+        end, start = create_unix_time_stamps(days=365)
+        return self.__call_api(symbol, ENDPOINTS["Quote"], arg=f"&resolution=D&from={start}&to={end}")
 
     def fetch_recommendations(self, symbol):
         """Fetch recommendations"""

@@ -11,7 +11,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.styles.differential import DifferentialStyle
 from openpyxl.formatting.rule import Rule
 from openpyxl.styles import Border, Side, Font, PatternFill
-
+import datetime, time
 
 def flatten_json(y):
     out = {}
@@ -86,4 +86,21 @@ def format_ws_borders(ws):
     for row in rows:
         for cell in row:
             cell.border = border
+
+
+def create_unix_time_stamps(days=365):
+    today = datetime.date.today()
+    unixtime_today = time.mktime(today.timetuple())
+    years_before = today - datetime.timedelta(days=days)
+    unix_time_before = time.mktime(years_before.timetuple())
+    return int(unixtime_today), int(unix_time_before)
+
+
+def create_date_as_strings():
+    today = datetime.date.today().strftime('%Y-%m-%d')
+    year_before = datetime.date.today() - datetime.timedelta(days=365)
+    year_before = year_before.strftime('%Y-%m-%d')
+    return today, year_before
+
+
 

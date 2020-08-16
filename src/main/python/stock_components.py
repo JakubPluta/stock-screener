@@ -82,8 +82,9 @@ class CompanyNews:
         self.__company_news = self.__extract_company_news()
 
     def __extract_company_news(self):
-        data = pd.json_normalize(self.__data).T
-        return data.reset_index()
+        data = pd.json_normalize(self.__data).reset_index()[['datetime','headline','summary']]
+        data['datetime'] = pd.to_datetime(data['datetime'], unit='s')
+        return data
 
     def get_company_news(self):
         return self.__company_news
@@ -110,8 +111,7 @@ class Recommendations:
         self.__recommendations = self.__extract_recommendations()
 
     def __extract_recommendations(self):
-        data = pd.json_normalize(self.__data).T
-        return data.reset_index()
+        return pd.json_normalize(self.__data).reset_index()
 
     def get_recommendations(self):
         return self.__recommendations
@@ -124,8 +124,18 @@ class Quote:
         self.__quote = self.__extract_quote()
 
     def __extract_quote(self):
-        data = pd.json_normalize(self.__data).T
-        return data.reset_index()
+        data = pd.DataFrame(self.__data)
+        data = data.rename(columns = {
+            "o" : "Open",
+            "h" : "High",
+            "c" : "Close",
+            "v" : "Volume",
+            "t" : "Date",
+            "l" : "Low"
+        })
+        data['Date'] = pd.to_datetime(data['Date'], unit='s')
+
+        return data[["Date","Open","Low",'High','Close','Volume']]
 
     def get_quote(self):
         return self.__quote
