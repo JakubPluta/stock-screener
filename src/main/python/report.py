@@ -10,81 +10,25 @@ class StockReport:
         self.__wb = Workbook()
         self.__output = None
 
-    def __write_company_info(self):
-        data = self.__stock.get_company()
-        ws = self.__wb.active
-        ws.title = f"{self.__stock.get_ticker()[0]}"
-        write_data_frame_to_rows(ws, data, False)
-        format_ws_borders(ws)
-        format_ws(ws)
+    def __create_first_page(self):
+        #TODO add a first page
+        pass
 
-    def __write_balance_sheet_to_excel(self):
-        data = self.__stock.get_balance_sheet()
-        ws = self.__wb.create_sheet("BalanceSheet")
-        write_data_frame_to_rows(ws, data)
-        ws.delete_rows(2, 1)
-        format_ws(ws)
+    def __delete_first_empty_page(self):
+        try:
+            del self.__wb['Sheet']
+        except ValueError:
+            print("Sheet not found")
 
-    def __write_income_statement_to_excel(self):
-        data = self.__stock.get_income_statement()
-        ws = self.__wb.create_sheet("IncomeStatement")
-        write_data_frame_to_rows(ws, data)
-        ws.delete_rows(2, 1)
-        format_ws(ws)
-
-    def __write_cash_flow_to_excel(self):
-        data = self.__stock.get_cash_flow()
-        ws = self.__wb.create_sheet("CashFlow")
-        write_data_frame_to_rows(ws, data)
-        ws.delete_rows(2, 1)
-        format_ws(ws)
-
-    def __write_metrics_to_excel(self):
-        data = self.__stock.get_key_stats()
-        ws = self.__wb.create_sheet("KeyMetrics")
-        write_data_frame_to_rows(ws, data)
-        ws.delete_rows(2, 1)
-        format_ws(ws)
-
-    def __write_company_news_info(self):
-        data = self.__stock.get_company_news()
-        ws = self.__wb.create_sheet("CompanyNews")
-        write_data_frame_to_rows(ws, data)
-        format_ws_borders(ws)
-        format_ws(ws)
-
-    def __write_recommendations(self):
-        data = self.__stock.get_recommendations()
-        ws = self.__wb.create_sheet("Recommendations")
-        write_data_frame_to_rows(ws, data)
-        format_ws_borders(ws)
-        format_ws(ws)
-
-    def __write_quote(self):
-        data = self.__stock.get_quote()
-        ws = self.__wb.create_sheet("Quote")
-        write_data_frame_to_rows(ws, data)
-        format_ws_borders(ws)
-        format_ws(ws)
-
-    def __write_sec_fillings(self):
-        data = self.__stock.get_sec_fillings()
-        ws = self.__wb.create_sheet("SecFillings")
-        write_data_frame_to_rows(ws, data)
-        format_ws_borders(ws)
-        format_ws(ws)
+    def __write_elements_into_excel(self):
+        for key, data in self.__stock.get_all_elements_of_stock().items():
+            ws = self.__wb.create_sheet(str(key))
+            write_data_frame_to_rows(ws, data)
+            format_ws(ws)
 
     def generate(self, filename, directory="output"):
-        self.__write_company_info()
-        self.__write_company_news_info()
-        self.__write_balance_sheet_to_excel()
-        self.__write_income_statement_to_excel()
-        self.__write_cash_flow_to_excel()
-        self.__write_quote()
-        self.__write_metrics_to_excel()
-        self.__write_recommendations()
-        self.__write_sec_fillings()
-
+        self.__write_elements_into_excel()
+        self.__delete_first_empty_page()
         path = Path(f"{directory}/{filename}.xlsx")
         path.parent.mkdir(parents=True, exist_ok=True)
         self.__output = path

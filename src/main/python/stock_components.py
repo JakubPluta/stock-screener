@@ -103,8 +103,7 @@ class NewsSentiment:
         self.__sentiments = self.__extract_sentiments()
 
     def __extract_sentiments(self):
-        data = pd.json_normalize(self.__data).T
-        return data.reset_index()
+        return pd.json_normalize(self.__data).T.reset_index()
 
     def get_sentiments(self):
         return self.__sentiments
@@ -117,8 +116,7 @@ class SEC:
         self.__sec_fillings = self.__extract_sec_fillings()
 
     def __extract_sec_fillings(self):
-        data = pd.json_normalize(self.__data)
-        return data.reset_index()
+        return pd.json_normalize(self.__data)
 
     def get_sec_fillings(self):
         return self.__sec_fillings
@@ -131,7 +129,7 @@ class Recommendations:
         self.__recommendations = self.__extract_recommendations()
 
     def __extract_recommendations(self):
-        return pd.json_normalize(self.__data).reset_index()
+        return pd.json_normalize(self.__data)
 
     def get_recommendations(self):
         return self.__recommendations

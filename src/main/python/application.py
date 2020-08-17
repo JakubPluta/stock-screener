@@ -12,7 +12,7 @@ if __name__ == "__main__":
         type=str,
         help="finnhub api_key",
         default=os.environ.get("FH_API_KEY"),
-        required=False,
+        required=True,
     )
     parser.add_argument(
         "--ticker",

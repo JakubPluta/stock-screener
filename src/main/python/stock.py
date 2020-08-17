@@ -66,9 +66,26 @@ class Stock:
         self.__recommendations = recommendations
         self.__quote = quote
         self.__sec_fillings = sec_fillings
+        self.__elements = {
+        }
+        self.__create_dict_of_all_elements()
 
     def __str__(self):
-        return f"Data found for {self.__ticker}"
+        return f"Data found for {self.__ticker[0]}"
+
+    def __create_dict_of_all_elements(self):
+        self.__elements["Company"] = self.__company
+        self.__elements["BalanceSheet"] = self.__balance_sheet
+        self.__elements["IncomeStatement"] = self.__income_statement
+        self.__elements["CashFlow"] = self.__cash_flow
+        self.__elements["Stats"] = self.__stats
+        self.__elements["CompanyNews"] = self.__company_news
+        self.__elements["Recommendations"] = self.__recommendations
+        self.__elements["Quote"] = self.__quote
+        self.__elements["SecFillings"] = self.__sec_fillings
+
+    def get_all_elements_of_stock(self):
+        return self.__elements
 
     def __verify_stocks(self):
         pass
