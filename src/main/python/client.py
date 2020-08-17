@@ -2,7 +2,7 @@ import logging
 import requests
 from requests import HTTPError
 from settings.default import TOKEN
-from utils import create_unix_time_stamps, create_date_as_strings
+from utils import create_time_period_in_ymd_format, create_unix_timestamps
 
 ENDPOINTS = {
     "Company Profile": "stock/profile2",
@@ -52,7 +52,9 @@ class FinnhubClient:
         headers = {"Content-type": "application/json", "X-Finnhub-Token": TOKEN}
 
         if arg is not None:
-            response = requests.get(self.URL + f"/{endpoint}?symbol={symbol}{arg}", headers=headers)
+            response = requests.get(
+                self.URL + f"/{endpoint}?symbol={symbol}{arg}", headers=headers
+            )
         else:
             response = requests.get(
                 self.URL + f"/{endpoint}?symbol={symbol}", headers=headers
@@ -80,8 +82,10 @@ class FinnhubClient:
 
     def fetch_company_news(self, symbol):
         """Fetch company news"""
-        end, start = create_date_as_strings()
-        return self.__call_api(symbol, ENDPOINTS["Company News"], arg=f"&from={start}&to={end}")
+        end, start = create_time_period_in_ymd_format()
+        return self.__call_api(
+            symbol, ENDPOINTS["Company News"], arg=f"&from={start}&to={end}"
+        )
 
     def fetch_news_sentiments(self, symbol):
         """Fetch company news sentiments"""
@@ -89,8 +93,10 @@ class FinnhubClient:
 
     def fetch_quote(self, symbol):
         """Fetch quotation of company"""
-        end, start = create_unix_time_stamps(days=365)
-        return self.__call_api(symbol, ENDPOINTS["Quote"], arg=f"&resolution=D&from={start}&to={end}")
+        end, start = create_unix_timestamps()
+        return self.__call_api(
+            symbol, ENDPOINTS["Quote"], arg=f"&resolution=D&from={start}&to={end}"
+        )
 
     def fetch_recommendations(self, symbol):
         """Fetch recommendations"""

@@ -6,8 +6,8 @@ import os
 
 
 def test_report_is_generated():
-    company = 'FB'
-    stock_creator = StockCreator(company,TOKEN)
+    company = "FB"
+    stock_creator = StockCreator(company, TOKEN)
     stock = stock_creator.create_stock()
     report = StockReport(stock)
     report.generate(filename="Financial Report")

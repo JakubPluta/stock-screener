@@ -13,10 +13,11 @@ class StockCreator:
         self.__quote = Quote(self.ticker, self.__client)
         self.__company_news = CompanyNews(self.ticker, self.__client)
         self.__recommendations = Recommendations(self.ticker, self.__client)
+        self.__sec_fillings = SEC(self.ticker, self.__client)
         self.__stock: Stock
 
     def create_stock(self):
-        ticker = self.ticker,
+        ticker = (self.ticker,)
         company = self.__company.get_company()
         balance_sheet = self.__financial_statement.get_balance_sheet()
         income_statement = self.__financial_statement.get_income_statement()
@@ -25,14 +26,35 @@ class StockCreator:
         recommendations = self.__recommendations.get_recommendations()
         quote = self.__quote.get_quote()
         company_news = self.__company_news.get_company_news()
+        sec_fillings = self.__sec_fillings.get_sec_fillings()
 
-        return Stock(ticker, company, balance_sheet, income_statement, cash_flow, stats, recommendations,
-                     quote, company_news)
+        return Stock(
+            ticker,
+            company,
+            balance_sheet,
+            income_statement,
+            cash_flow,
+            stats,
+            recommendations,
+            quote,
+            company_news,
+            sec_fillings
+        )
 
 
 class Stock:
     def __init__(
-        self, ticker, company, balance_sheet, income_statement, cash_flow, stats, recommendations, quote, company_news
+        self,
+        ticker,
+        company,
+        balance_sheet,
+        income_statement,
+        cash_flow,
+        stats,
+        recommendations,
+        quote,
+        company_news,
+        sec_fillings
     ):
         self.__ticker: str = ticker
         self.__company: pd.DataFrame = company
@@ -43,6 +65,7 @@ class Stock:
         self.__company_news = company_news
         self.__recommendations = recommendations
         self.__quote = quote
+        self.__sec_fillings = sec_fillings
 
     def __str__(self):
         return f"Data found for {self.__ticker}"
@@ -94,3 +117,6 @@ class Stock:
 
     def get_company_news(self):
         return self.__company_news
+
+    def get_sec_fillings(self):
+        return self.__sec_fillings

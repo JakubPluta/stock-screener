@@ -5,7 +5,7 @@ from client import FinnhubClient
 class FinancialStatement:
     financial_elements = ["bs", "ic", "cf"]
 
-    def __init__(self, ticker, client: FinnhubClient ):
+    def __init__(self, ticker, client: FinnhubClient):
         self.__ticker = ticker
         self.__data = client.fetch_financial_statement_as_reported(self.__ticker)
         (
@@ -69,7 +69,11 @@ class KeyMetrics:
         self.__key_metrics = self.__extract_key_metrics()
 
     def __extract_key_metrics(self):
-        return pd.json_normalize(self.__data.get('metric')).T.reset_index().rename(columns={"index":"KPI", 0:"Value"})
+        return (
+            pd.json_normalize(self.__data.get("metric"))
+            .T.reset_index()
+            .rename(columns={"index": "KPI", 0: "Value"})
+        )
 
     def get_key_metrics(self):
         return self.__key_metrics
@@ -82,8 +86,10 @@ class CompanyNews:
         self.__company_news = self.__extract_company_news()
 
     def __extract_company_news(self):
-        data = pd.json_normalize(self.__data).reset_index()[['datetime','headline','summary']]
-        data['datetime'] = pd.to_datetime(data['datetime'], unit='s')
+        data = pd.json_normalize(self.__data).reset_index()[
+            ["datetime", "headline", "summary"]
+        ]
+        data["datetime"] = pd.to_datetime(data["datetime"], unit="s")
         return data
 
     def get_company_news(self):
@@ -102,6 +108,20 @@ class NewsSentiment:
 
     def get_sentiments(self):
         return self.__sentiments
+
+
+class SEC:
+    def __init__(self, ticker, client: FinnhubClient):
+        self.__ticker = ticker
+        self.__data = client.fetch_sec_fillings(self.__ticker)
+        self.__sec_fillings = self.__extract_sec_fillings()
+
+    def __extract_sec_fillings(self):
+        data = pd.json_normalize(self.__data)
+        return data.reset_index()
+
+    def get_sec_fillings(self):
+        return self.__sec_fillings
 
 
 class Recommendations:
@@ -125,17 +145,19 @@ class Quote:
 
     def __extract_quote(self):
         data = pd.DataFrame(self.__data)
-        data = data.rename(columns = {
-            "o" : "Open",
-            "h" : "High",
-            "c" : "Close",
-            "v" : "Volume",
-            "t" : "Date",
-            "l" : "Low"
-        })
-        data['Date'] = pd.to_datetime(data['Date'], unit='s')
+        data = data.rename(
+            columns={
+                "o": "Open",
+                "h": "High",
+                "c": "Close",
+                "v": "Volume",
+                "t": "Date",
+                "l": "Low",
+            }
+        )
+        data["Date"] = pd.to_datetime(data["Date"], unit="s")
 
-        return data[["Date","Open","Low",'High','Close','Volume']]
+        return data[["Date", "Open", "Low", "High", "Close", "Volume"]]
 
     def get_quote(self):
         return self.__quote

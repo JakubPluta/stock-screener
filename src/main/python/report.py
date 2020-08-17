@@ -5,7 +5,6 @@ from pathlib import Path
 
 
 class StockReport:
-
     def __init__(self, stock: Stock):
         self.__stock = stock
         self.__wb = Workbook()
@@ -68,6 +67,13 @@ class StockReport:
         format_ws_borders(ws)
         format_ws(ws)
 
+    def __write_sec_fillings(self):
+        data = self.__stock.get_sec_fillings()
+        ws = self.__wb.create_sheet("SecFillings")
+        write_data_frame_to_rows(ws, data)
+        format_ws_borders(ws)
+        format_ws(ws)
+
     def generate(self, filename, directory="output"):
         self.__write_company_info()
         self.__write_company_news_info()
@@ -77,12 +83,11 @@ class StockReport:
         self.__write_quote()
         self.__write_metrics_to_excel()
         self.__write_recommendations()
+        self.__write_sec_fillings()
 
-        path = Path(f'{directory}/{filename}.xlsx')
+        path = Path(f"{directory}/{filename}.xlsx")
         path.parent.mkdir(parents=True, exist_ok=True)
         self.__output = path
 
         print(f"Report was generated and save {path}")
         self.__wb.save(path)
-
-
