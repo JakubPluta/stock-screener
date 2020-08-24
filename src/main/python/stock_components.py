@@ -55,8 +55,9 @@ class CompanyProfile:
         self.__company = self.__extract_company()
 
     def __extract_company(self):
-        data = pd.json_normalize(self.__data).T
-        return data.reset_index()
+        data = pd.json_normalize(self.__data).T.reset_index()
+        data.columns = ["Label", "Value"]
+        return data
 
     def get_company(self):
         return self.__company

@@ -10,19 +10,18 @@ class StockReport:
         self.__wb = Workbook()
         self.__output = None
 
-    def __create_first_page(self):
-        #TODO add a first page
-        pass
-
     def __delete_first_empty_page(self):
         try:
-            del self.__wb['Sheet']
+            del self.__wb["Sheet"]
         except ValueError:
             print("Sheet not found")
 
     def __write_elements_into_excel(self):
         for key, data in self.__stock.get_all_elements_of_stock().items():
             ws = self.__wb.create_sheet(str(key))
+            validate_data_frame(data)
+            data = upper_headers(data)
+            data = replace_illegal_characters(data)
             write_data_frame_to_rows(ws, data)
             format_ws(ws)
 

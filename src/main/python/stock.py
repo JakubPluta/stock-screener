@@ -38,7 +38,7 @@ class StockCreator:
             recommendations,
             quote,
             company_news,
-            sec_fillings
+            sec_fillings,
         )
 
 
@@ -54,7 +54,7 @@ class Stock:
         recommendations,
         quote,
         company_news,
-        sec_fillings
+        sec_fillings,
     ):
         self.__ticker: str = ticker
         self.__company: pd.DataFrame = company
@@ -66,8 +66,7 @@ class Stock:
         self.__recommendations = recommendations
         self.__quote = quote
         self.__sec_fillings = sec_fillings
-        self.__elements = {
-        }
+        self.__elements = {}
         self.__create_dict_of_all_elements()
 
     def __str__(self):
