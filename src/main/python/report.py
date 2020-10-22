@@ -28,7 +28,7 @@ class StockReport:
     def generate(self, filename, directory="output"):
         self.__write_elements_into_excel()
         self.__delete_first_empty_page()
-        path = Path(f"{directory}/{filename}.xlsx")
+        path = Path(f"/api/{directory}/{filename}.xlsx")
         path.parent.mkdir(parents=True, exist_ok=True)
         self.__output = path
 

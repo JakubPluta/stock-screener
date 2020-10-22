@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+        <div class="jumbotron">
+            {% for symbol in symbols %}
+            <p>{{ symbol.ticker }}: {{ symbol.name }}</p>
+            {% endfor %}
+      </div>
+
+{% endblock content %}

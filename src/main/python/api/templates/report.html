@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="form-group">
+  <h2>Create stock report</h2>
+  <form action=""  method="post">
+    {% for field in form %} {% for error in field.errors %}<span
+      class="error"
+      >{{ error }}</span
+    >{% endfor %}
+    <div class="input">
+      {{ field.csrf_token }}
+      {{ field(placeholder="Enter ticker", class="input__url" ) }}
+      {% endfor %}
+      <input type="submit" class="btn" value="Build report &raquo;" />
+    </div>
+  </form>
+</div>
+
+{% endblock %}
