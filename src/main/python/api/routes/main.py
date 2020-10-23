@@ -28,32 +28,21 @@ def report():
     form = SymbolForm()
     if form.validate_on_submit():
         company = form.data.get('symbol')
-        stock_creator = StockCreator(company, TOKEN)
-        stock = stock_creator.create_stock()
-        report = StockReport(stock)
-        report.generate(filename="Financial Report")
-        path = os.path.join(report._StockReport__output)
-        return send_file(path, as_attachment=True)
+        if bool(Symbol.query.filter_by(ticker=company).first()):
+            try:
+                stock_creator = StockCreator(company, TOKEN)
+                stock = stock_creator.create_stock()
+                report = StockReport(stock)
+                report.generate(filename="Financial Report")
+                path = os.path.join(report._StockReport__output)
+                return send_file(path, as_attachment=True)
+            except:
+                flash('Provided company doesnt exists')
+                redirect(url_for('main.report'))
+        else:
+            flash('Provided company doesnt exists')
+            redirect(url_for('main.report'))
     return render_template('report.html', form=form)
-
-
-@main.route('/search')
-def search_results(ticker):
-    if ticker is not None:
-        ticker = Symbol.query.get_or_404(ticker)
-    if not ticker:
-        flash('No results found!')
-        return redirect('/')
-    else:
-        # display results
-        return render_template('results.html', ticker=ticker)
-
-
-
-
-
-
-
 
 
 
@@ -66,8 +55,6 @@ def about():
 def symbols():
     symbols = Symbol.query.all()
     return render_template('tickers.html', symbols=symbols)
-
-
 
 
 

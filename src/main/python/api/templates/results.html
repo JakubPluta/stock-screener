@@ -1,8 +1,44 @@
 {% extends "layout.html" %}
 {% block content %}
-        <div class="jumbotron">
-            <p>{{ ticker.symbol }}: {{ symbol.name }}</p>
 
-      </div>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+	<head>
+		<title>Live Search Ajax Demo</title>
+		<meta charset="utf-8">
+		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script>
+			function liveSearch(value){
+				value = value.trim(); // remove any spaces around the text
+				if(value != ""){ // don't make requests with an empty string
+					$.ajax({
+						url: "search",
+						data: {searchText: value},
+						dataType: "json",
+						success: function(data){
+							var res = "";
+							// create the html with results
+							for(i in data.results){
+								res += "<div>"+data.results[i]+"</div>";
+							}
+							$("#results").html(res);
+						}
+
+					});
+				}
+				else{
+					$("#results").html(""); // set the results empty in case of empty string
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<h1>Live Search Ajax Demo</h1>
+		<input type="text" onkeyup="liveSearch(this.value)"> <!-- Assigns the key up event to call the liveSearch() function -->
+		<br>
+		<div id="results"></div> <!-- Results will be printed here -->
+	</body>
+
 
 {% endblock content %}
+

@@ -1,20 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 
+<main role="main">
+  <section class="jumbotron text-center">
 <div class="form-group">
-  <h2>Create stock report</h2>
+  <h1 class="jumbotron-heading">Create stock report</h1>
+  <p class="lead text-muted">Find company that you want!</p>
   <form action=""  method="post">
+
     {% for field in form %} {% for error in field.errors %}<span
       class="error"
       >{{ error }}</span
     >{% endfor %}
-    <div class="input">
+    <div class="input lead text-muted">
       {{ field.csrf_token }}
-      {{ field(placeholder="Enter ticker", class="input__url" ) }}
+      {{ field(placeholder="Enter ticker", class="input__url lead text-muted" ) }}
       {% endfor %}
       <input type="submit" class="btn" value="Build report &raquo;" />
     </div>
   </form>
-</div>
+  </div>
+    </section>
+</main>
 
 {% endblock %}
+
